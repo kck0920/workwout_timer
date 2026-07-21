@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useTimer } from '../hooks/useTimer'
 import { useFeedback } from '../hooks/useFeedback'
+import { useWakeLock } from '../hooks/useWakeLock'
 import { CircularProgress } from './CircularProgress'
 import type { Preset } from '../lib/types'
 import { createRecord } from '../lib/db'
@@ -31,6 +32,8 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
   const [completed, setCompleted] = useState(false)
   const [totalDuration, setTotalDuration] = useState(0)
   const [startTime] = useState(() => Date.now())
+
+  useWakeLock(!completed)
 
   useEffect(() => {
     load(preset)
