@@ -32,12 +32,16 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
   const [formData, setFormData] = useState<Preset>(preset ?? createDefaultPreset())
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [editingDuration, setEditingDuration] = useState<{ index: number; value: string } | null>(null)
+  const [setsInput, setSetsInput] = useState(String(preset?.sets ?? 3))
 
   const handleSave = useCallback(async () => {
     if (!formData.name.trim()) return
     if (formData.exercises.length === 0) return
 
     setSaving(true)
+    setSaveError(null)
     try {
       if (preset?.id) {
         await updatePreset(formData)
@@ -51,6 +55,7 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
       onSave()
     } catch (err) {
       console.error('Failed to save preset:', err)
+      setSaveError('저장에 실패했습니다. 다시 시도해주세요.')
     } finally {
       setSaving(false)
     }
@@ -165,10 +170,24 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
           type="number"
           min={1}
           max={10}
-          value={formData.sets}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, sets: parseInt(e.target.value) || 1 }))
-          }
+          value={setsInput}
+          onChange={(e) => {
+            setSetsInput(e.target.value)
+            const parsed = parseInt(e.target.value)
+            if (!isNaN(parsed) && parsed >= 1 && parsed <= 10) {
+              setFormData((prev) => ({ ...prev, sets: parsed }))
+            }
+          }}
+          onBlur={() => {
+            const parsed = parseInt(setsInput)
+            if (isNaN(parsed) || parsed < 1) {
+              setSetsInput(String(formData.sets))
+            } else {
+              const clamped = Math.min(10, Math.max(1, parsed))
+              setSetsInput(String(clamped))
+              setFormData((prev) => ({ ...prev, sets: clamped }))
+            }
+          }}
           style={{
             width: '100px',
             padding: 'var(--space-sm) var(--space-md)',
@@ -280,10 +299,26 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                   type="number"
                   min={5}
                   max={300}
-                  value={exercise.duration}
-                  onChange={(e) =>
-                    updateExercise(index, { duration: parseInt(e.target.value) || 30 })
-                  }
+                  value={editingDuration?.index === index ? editingDuration.value : String(exercise.duration)}
+                  onChange={(e) => {
+                    setEditingDuration({ index, value: e.target.value })
+                    const parsed = parseInt(e.target.value)
+                    if (!isNaN(parsed) && parsed >= 5 && parsed <= 300) {
+                      updateExercise(index, { duration: parsed })
+                    }
+                  }}
+                  onBlur={() => {
+                    if (editingDuration?.index === index) {
+                      const parsed = parseInt(editingDuration.value)
+                      if (isNaN(parsed) || parsed < 5) {
+                        setEditingDuration(null)
+                      } else {
+                        const clamped = Math.min(300, Math.max(5, parsed))
+                        updateExercise(index, { duration: clamped })
+                        setEditingDuration(null)
+                      }
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: 'var(--space-xs) var(--space-sm)',
@@ -404,6 +439,19 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
       </div>
 
       {/* Action Buttons */}
+      {saveError && (
+        <div style={{
+          padding: 'var(--space-sm) var(--space-md)',
+          marginBottom: 'var(--space-sm)',
+          backgroundColor: 'var(--color-error)',
+          color: 'white',
+          borderRadius: 'var(--radius-md)',
+          fontSize: 'var(--font-size-sm)',
+          textAlign: 'center',
+        }}>
+          {saveError}
+        </div>
+      )}
       <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
         <button
           type="button"
@@ -416,8 +464,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
             color: 'white',
             border: 'none',
             borderRadius: 'var(--radius-md)',
-            cursor: saving ? 'not-allowed' : 'pointer',
-            opacity: saving || !formData.name.trim() ? 0.5 : 1,
+            cursor: saving || !formData.name.trim() || formData.exercises.length === 0 ? 'not-allowed' : 'pointer',
+            opacity: saving || !formData.name.trim() || formData.exercises.length === 0 ? 0.5 : 1,
             fontWeight: 600,
           }}
         >
