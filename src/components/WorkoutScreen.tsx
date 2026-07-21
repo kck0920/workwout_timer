@@ -89,15 +89,8 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
   if (completed) {
     return (
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          padding: 'var(--space-lg)',
-          textAlign: 'center',
-        }}
+        className="workout-screen-container"
+        style={{ textAlign: 'center' }}
       >
         <div style={{ fontSize: '64px', marginBottom: 'var(--space-lg)' }}>🎉</div>
         <h2 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-md)', fontWeight: 800 }}>
@@ -109,7 +102,7 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-lg)' }}>
           총 시간: {Math.floor(totalDuration / 60)}분 {totalDuration % 60}초
         </p>
-        <div style={{ display: 'flex', gap: 'var(--space-sm)', width: '100%', maxWidth: '360px' }}>
+        <div className="workout-controls" style={{ gap: 'var(--space-sm)' }}>
           <button
             type="button"
             onClick={onComplete}
@@ -138,37 +131,26 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        padding: 'var(--space-lg)',
-      }}
-    >
+    <div className="workout-screen-container">
       {/* Exercise Info */}
-      <div style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', marginBottom: 'var(--space-xs)', fontWeight: 800 }}>
+      <div className="workout-info">
+        <h2 className="workout-title">
           {currentExercise?.name || preset.name}
         </h2>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>
+        <p className="workout-sets">
           세트 {currentSet} / {totalSets}
         </p>
       </div>
 
       {/* Circular Progress */}
-      <div style={{ marginBottom: 'var(--space-xl)' }}>
-        <CircularProgress
-          progress={progress}
-          remaining={remaining}
-          isExercise={timerState === 'exercising'}
-        />
-      </div>
+      <CircularProgress
+        progress={progress}
+        remaining={remaining}
+        isExercise={timerState === 'exercising'}
+      />
 
       {/* Controls */}
-      <div style={{ display: 'flex', gap: 'var(--space-md)', width: '100%', maxWidth: '360px' }}>
+      <div className="workout-controls">
         {timerState === 'idle' ? (
           <button
             type="button"

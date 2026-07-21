@@ -9,9 +9,8 @@ export function CircularProgress({
   remaining,
   isExercise,
 }: CircularProgressProps) {
-  const size = 280
-  const strokeWidth = 12
-  const radius = (size - strokeWidth) / 2
+  const strokeWidth = 4.3
+  const radius = (100 - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const offset = circumference * (1 - progress)
 
@@ -24,25 +23,19 @@ export function CircularProgress({
   const color = isExercise ? 'var(--color-primary)' : 'var(--color-secondary)'
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: `${size}px`,
-        height: `${size}px`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className="timer-circle-container">
       <svg
-        width={size}
-        height={size}
-        style={{ transform: 'rotate(-90deg)' }}
+        viewBox="0 0 100 100"
+        style={{
+          width: '100%',
+          height: '100%',
+          transform: 'rotate(-90deg)',
+        }}
       >
         {/* Background circle */}
         <circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={50}
+          cy={50}
           r={radius}
           fill="none"
           stroke="var(--color-surface-variant)"
@@ -50,8 +43,8 @@ export function CircularProgress({
         />
         {/* Progress circle */}
         <circle
-          cx={size / 2}
-          cy={size / 2}
+          cx={50}
+          cy={50}
           r={radius}
           fill="none"
           stroke={color}
@@ -72,22 +65,10 @@ export function CircularProgress({
           alignItems: 'center',
         }}
       >
-        <span
-          style={{
-            fontSize: 'var(--font-size-3xl)',
-            fontWeight: 700,
-            color: 'var(--color-text)',
-            fontVariantNumeric: 'tabular-nums',
-          }}
-        >
+        <span className="timer-text-time">
           {formatTime(remaining)}
         </span>
-        <span
-          style={{
-            fontSize: 'var(--font-size-sm)',
-            color: 'var(--color-text-muted)',
-          }}
-        >
+        <span className="timer-text-label">
           {isExercise ? '운동 중' : '휴식 중'}
         </span>
       </div>
