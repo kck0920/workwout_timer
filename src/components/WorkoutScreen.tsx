@@ -12,35 +12,50 @@ interface WorkoutScreenProps {
 }
 
 export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps) {
-  const timer = useTimer()
-  const feedback = useFeedback()
+  const {
+    state: timerState,
+    remaining,
+    progress,
+    currentExercise,
+    currentSet,
+    totalSets,
+    countdown,
+    load,
+    start,
+    pause,
+    skip,
+    reset,
+  } = useTimer()
+  
+  const { play } = useFeedback()
   const [completed, setCompleted] = useState(false)
   const [totalDuration, setTotalDuration] = useState(0)
   const [startTime] = useState(() => Date.now())
 
   useEffect(() => {
-    timer.load(preset)
-  }, [preset, timer.load])
+    load(preset)
+  }, [preset, load])
 
   useEffect(() => {
-    if (timer.state === 'exercising') {
-      feedback.play('exercise')
-    } else if (timer.state === 'resting') {
-      feedback.play('rest')
+    if (timerState === 'exercising') {
+      play('exercise')
+    } else if (timerState === 'resting') {
+      play('rest')
     }
-  }, [timer.state, feedback.play])
+  }, [timerState, play])
 
   useEffect(() => {
-    if (timer.countdown !== null && timer.countdown > 0) {
-      feedback.play('countdown')
+    if (countdown !== null && countdown > 0) {
+      play('countdown')
     }
-  }, [timer.countdown, feedback.play])
+  }, [countdown, play])
 
   useEffect(() => {
-    if (timer.state === 'completed' && !completed) {
+    if (timerState === 'completed' && !completed) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCompleted(true)
       setTotalDuration(Math.floor((Date.now() - startTime) / 1000))
-      feedback.play('workoutComplete')
+      play('workoutComplete')
 
       createRecord({
         presetId: preset.id,
@@ -48,28 +63,28 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         duration: Math.floor((Date.now() - startTime) / 1000),
       })
     }
-  }, [timer.state, completed, preset, startTime, feedback.play])
+  }, [timerState, completed, preset, startTime, play])
 
   const handleStart = useCallback(() => {
-    timer.start()
-  }, [timer.start])
+    start()
+  }, [start])
 
   const handlePause = useCallback(() => {
-    if (timer.state === 'paused') {
-      timer.start()
+    if (timerState === 'paused') {
+      start()
     } else {
-      timer.pause()
+      pause()
     }
-  }, [timer.state, timer.start, timer.pause])
+  }, [timerState, start, pause])
 
   const handleSkip = useCallback(() => {
-    timer.skip()
-  }, [timer.skip])
+    skip()
+  }, [skip])
 
   const handleReset = useCallback(() => {
-    timer.reset()
+    reset()
     setCompleted(false)
-  }, [timer.reset])
+  }, [reset])
 
   if (completed) {
     return (
@@ -85,7 +100,7 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         }}
       >
         <div style={{ fontSize: '64px', marginBottom: 'var(--space-lg)' }}>🎉</div>
-        <h2 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-md)' }}>
+        <h2 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-md)', fontWeight: 800 }}>
           운동 완료!
         </h2>
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-sm)' }}>
@@ -94,19 +109,14 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-lg)' }}>
           총 시간: {Math.floor(totalDuration / 60)}분 {totalDuration % 60}초
         </p>
-        <div style={{ display: 'flex', gap: 'var(--space-sm)', width: '100%', maxWidth: '300px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', width: '100%', maxWidth: '360px' }}>
           <button
             type="button"
             onClick={onComplete}
+            className="btn btn-primary"
             style={{
               flex: 1,
               padding: 'var(--space-md)',
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              cursor: 'pointer',
-              fontWeight: 600,
             }}
           >
             홈으로
@@ -114,14 +124,10 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
           <button
             type="button"
             onClick={handleReset}
+            className="btn btn-secondary"
             style={{
               flex: 1,
               padding: 'var(--space-md)',
-              backgroundColor: 'var(--color-surface-variant)',
-              color: 'var(--color-text)',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              cursor: 'pointer',
             }}
           >
             다시 하기
@@ -144,38 +150,33 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
     >
       {/* Exercise Info */}
       <div style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', marginBottom: 'var(--space-xs)' }}>
-          {timer.currentExercise?.name || preset.name}
+        <h2 style={{ fontSize: 'var(--font-size-xl)', marginBottom: 'var(--space-xs)', fontWeight: 800 }}>
+          {currentExercise?.name || preset.name}
         </h2>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          세트 {timer.currentSet} / {timer.totalSets}
+        <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>
+          세트 {currentSet} / {totalSets}
         </p>
       </div>
 
       {/* Circular Progress */}
       <div style={{ marginBottom: 'var(--space-xl)' }}>
         <CircularProgress
-          progress={timer.progress}
-          remaining={timer.remaining}
-          isExercise={timer.state === 'exercising'}
+          progress={progress}
+          remaining={remaining}
+          isExercise={timerState === 'exercising'}
         />
       </div>
 
       {/* Controls */}
-      <div style={{ display: 'flex', gap: 'var(--space-md)', width: '100%', maxWidth: '300px' }}>
-        {timer.state === 'idle' ? (
+      <div style={{ display: 'flex', gap: 'var(--space-md)', width: '100%', maxWidth: '360px' }}>
+        {timerState === 'idle' ? (
           <button
             type="button"
             onClick={handleStart}
+            className="btn btn-primary"
             style={{
               flex: 1,
-              padding: 'var(--space-lg)',
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-lg)',
-              cursor: 'pointer',
-              fontWeight: 600,
+              padding: 'var(--space-md)',
               fontSize: 'var(--font-size-lg)',
             }}
           >
@@ -186,32 +187,22 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
             <button
               type="button"
               onClick={handlePause}
+              className="btn btn-secondary"
               style={{
                 flex: 1,
                 padding: 'var(--space-md)',
-                backgroundColor: 'var(--color-surface-variant)',
-                color: 'var(--color-text)',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                cursor: 'pointer',
-                fontWeight: 600,
               }}
             >
-              {timer.state === 'paused' ? '계속' : '일시정지'}
+              {timerState === 'paused' ? '계속' : '일시정지'}
             </button>
             <button
               type="button"
               onClick={handleSkip}
-              disabled={timer.state === 'paused'}
+              disabled={timerState === 'paused'}
+              className="btn btn-secondary"
               style={{
                 flex: 1,
                 padding: 'var(--space-md)',
-                backgroundColor: 'var(--color-surface-variant)',
-                color: 'var(--color-text)',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                cursor: timer.state === 'paused' ? 'not-allowed' : 'pointer',
-                opacity: timer.state === 'paused' ? 0.5 : 1,
               }}
             >
               건너뛰기
@@ -224,15 +215,17 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
       <button
         type="button"
         onClick={onExit}
+        className="btn btn-secondary"
         style={{
           marginTop: 'var(--space-lg)',
-          padding: 'var(--space-sm) var(--space-md)',
+          padding: 'var(--space-xs) var(--space-md)',
+          minHeight: 'auto',
           backgroundColor: 'transparent',
           color: 'var(--color-text-muted)',
           border: 'none',
-          cursor: 'pointer',
-          fontSize: 'var(--font-size-sm)',
         }}
+        onMouseOver={(e) => (e.currentTarget.style.color = 'var(--color-error)')}
+        onMouseOut={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
       >
         종료
       </button>

@@ -116,8 +116,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
   }, [])
 
   return (
-    <div style={{ padding: 'var(--space-md)', maxWidth: '600px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: 'var(--space-lg)', fontSize: 'var(--font-size-xl)' }}>
+    <div style={{ padding: 'var(--space-md)', maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+      <h2 style={{ marginBottom: 'var(--space-lg)', fontSize: 'var(--font-size-xl)', fontWeight: 800 }}>
         {preset?.id ? '프리셋 편집' : '새 프리셋'}
       </h2>
 
@@ -130,6 +130,7 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
             marginBottom: 'var(--space-xs)',
             fontSize: 'var(--font-size-sm)',
             color: 'var(--color-text-muted)',
+            fontWeight: 500,
           }}
         >
           프리셋 이름
@@ -140,15 +141,7 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
           value={formData.name}
           onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
           placeholder="예: 상체 루틴"
-          style={{
-            width: '100%',
-            padding: 'var(--space-sm) var(--space-md)',
-            backgroundColor: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text)',
-            fontSize: 'var(--font-size-md)',
-          }}
+          className="form-input"
         />
       </div>
 
@@ -161,6 +154,7 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
             marginBottom: 'var(--space-xs)',
             fontSize: 'var(--font-size-sm)',
             color: 'var(--color-text-muted)',
+            fontWeight: 500,
           }}
         >
           세트 수
@@ -188,15 +182,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
               setFormData((prev) => ({ ...prev, sets: clamped }))
             }
           }}
-          style={{
-            width: '100px',
-            padding: 'var(--space-sm) var(--space-md)',
-            backgroundColor: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text)',
-            fontSize: 'var(--font-size-md)',
-          }}
+          className="form-input"
+          style={{ width: '120px' }}
         />
       </div>
 
@@ -210,29 +197,33 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
             marginBottom: 'var(--space-md)',
           }}
         >
-          <h3 style={{ fontSize: 'var(--font-size-lg)' }}>운동 목록</h3>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700 }}>운동 목록</h3>
           <button
             type="button"
             onClick={addExercise}
+            className="btn btn-secondary"
             style={{
               padding: 'var(--space-xs) var(--space-sm)',
-              backgroundColor: 'var(--color-surface-variant)',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--color-text)',
-              cursor: 'pointer',
               fontSize: 'var(--font-size-sm)',
+              minHeight: '40px',
             }}
           >
-            + 추가
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '4px' }}>
+              <path d="M5 12h14"/>
+              <path d="M12 5v14"/>
+            </svg>
+            추가
           </button>
         </div>
 
         <div
           style={{
-            maxHeight: '400px',
+            maxHeight: '480px',
             overflowY: 'auto',
             paddingRight: 'var(--space-xs)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-sm)',
           }}
         >
         {formData.exercises.map((exercise, index) => (
@@ -240,48 +231,37 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
             key={index}
             style={{
               backgroundColor: 'var(--color-surface)',
-              border: '1px solid var(--color-border)',
+              border: '1.5px solid var(--color-border)',
               borderRadius: 'var(--radius-md)',
               padding: 'var(--space-md)',
-              marginBottom: 'var(--space-sm)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-sm)',
             }}
           >
-            <div style={{ display: 'flex', gap: 'var(--space-sm)', marginBottom: 'var(--space-sm)' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
               <input
                 type="text"
                 value={exercise.name}
                 onChange={(e) => updateExercise(index, { name: e.target.value })}
                 placeholder="운동 이름"
-                style={{
-                  flex: 1,
-                  padding: 'var(--space-xs) var(--space-sm)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: 'var(--color-text)',
-                  fontSize: 'var(--font-size-sm)',
-                }}
+                className="form-input"
+                style={{ flex: 1 }}
               />
               <select
                 value={exercise.type}
                 onChange={(e) =>
                   updateExercise(index, { type: e.target.value as 'exercise' | 'rest' })
                 }
-                style={{
-                  padding: 'var(--space-xs) var(--space-sm)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: 'var(--color-text)',
-                  fontSize: 'var(--font-size-sm)',
-                }}
+                className="form-select"
+                style={{ width: '120px' }}
               >
                 <option value="exercise">운동</option>
                 <option value="rest">휴식</option>
               </select>
             </div>
 
-            <div style={{ display: 'flex', gap: 'var(--space-sm)', marginBottom: 'var(--space-sm)' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
               <div style={{ flex: 1 }}>
                 <label
                   htmlFor={`duration-${index}`}
@@ -289,7 +269,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                     display: 'block',
                     fontSize: 'var(--font-size-xs)',
                     color: 'var(--color-text-muted)',
-                    marginBottom: '2px',
+                    marginBottom: '4px',
+                    fontWeight: 500,
                   }}
                 >
                   시간 (초)
@@ -319,15 +300,7 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                       }
                     }
                   }}
-                  style={{
-                    width: '100%',
-                    padding: 'var(--space-xs) var(--space-sm)',
-                    backgroundColor: 'var(--color-surface-variant)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-sm)',
-                    color: 'var(--color-text)',
-                    fontSize: 'var(--font-size-sm)',
-                  }}
+                  className="form-input"
                 />
               </div>
               {exercise.type === 'exercise' && (
@@ -338,7 +311,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                       display: 'block',
                       fontSize: 'var(--font-size-xs)',
                       color: 'var(--color-text-muted)',
-                      marginBottom: '2px',
+                      marginBottom: '4px',
+                      fontWeight: 500,
                     }}
                   >
                     반복 횟수
@@ -355,81 +329,79 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                       })
                     }
                     placeholder="선택사항"
-                    style={{
-                      width: '100%',
-                      padding: 'var(--space-xs) var(--space-sm)',
-                      backgroundColor: 'var(--color-surface-variant)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--color-text)',
-                      fontSize: 'var(--font-size-sm)',
-                    }}
+                    className="form-input"
                   />
                 </div>
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: 'var(--space-xs)' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 'var(--space-xs)' }}>
               <button
                 type="button"
                 onClick={() => moveExercise(index, 'up')}
                 disabled={index === 0}
+                className="btn btn-secondary"
                 style={{
+                  flex: 1,
                   padding: 'var(--space-xs)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: index === 0 ? 'not-allowed' : 'pointer',
-                  opacity: index === 0 ? 0.5 : 1,
-                  color: 'var(--color-text)',
+                  minHeight: '40px',
                 }}
+                title="위로 이동"
               >
-                ↑
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m18 15-6-6-6 6"/>
+                </svg>
               </button>
               <button
                 type="button"
                 onClick={() => moveExercise(index, 'down')}
                 disabled={index === formData.exercises.length - 1}
+                className="btn btn-secondary"
                 style={{
+                  flex: 1,
                   padding: 'var(--space-xs)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: index === formData.exercises.length - 1 ? 'not-allowed' : 'pointer',
-                  opacity: index === formData.exercises.length - 1 ? 0.5 : 1,
-                  color: 'var(--color-text)',
+                  minHeight: '40px',
                 }}
+                title="아래로 이동"
               >
-                ↓
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
               </button>
               <button
                 type="button"
                 onClick={() => duplicateExercise(index)}
+                className="btn btn-secondary"
                 style={{
+                  flex: 2,
                   padding: 'var(--space-xs)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: 'pointer',
-                  color: 'var(--color-text)',
+                  fontSize: 'var(--font-size-xs)',
+                  minHeight: '40px',
                 }}
               >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
                 복사
               </button>
               <button
                 type="button"
                 onClick={() => removeExercise(index)}
                 disabled={formData.exercises.length <= 1}
+                className="btn btn-danger"
                 style={{
+                  flex: 2,
                   padding: 'var(--space-xs)',
-                  backgroundColor: 'var(--color-error)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: formData.exercises.length <= 1 ? 'not-allowed' : 'pointer',
-                  opacity: formData.exercises.length <= 1 ? 0.5 : 1,
-                  color: 'white',
+                  fontSize: 'var(--font-size-xs)',
+                  minHeight: '40px',
                 }}
               >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
                 삭제
               </button>
             </div>
@@ -442,12 +414,13 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
       {saveError && (
         <div style={{
           padding: 'var(--space-sm) var(--space-md)',
-          marginBottom: 'var(--space-sm)',
+          marginBottom: 'var(--space-md)',
           backgroundColor: 'var(--color-error)',
           color: 'white',
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
           textAlign: 'center',
+          fontWeight: 600,
         }}>
           {saveError}
         </div>
@@ -457,16 +430,10 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
           type="button"
           onClick={handleSave}
           disabled={saving || !formData.name.trim() || formData.exercises.length === 0}
+          className="btn btn-primary"
           style={{
-            flex: 1,
+            flex: 2,
             padding: 'var(--space-md)',
-            backgroundColor: 'var(--color-primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: 'var(--radius-md)',
-            cursor: saving || !formData.name.trim() || formData.exercises.length === 0 ? 'not-allowed' : 'pointer',
-            opacity: saving || !formData.name.trim() || formData.exercises.length === 0 ? 0.5 : 1,
-            fontWeight: 600,
           }}
         >
           {saving ? '저장 중...' : '저장'}
@@ -475,13 +442,10 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
         <button
           type="button"
           onClick={onCancel}
+          className="btn btn-secondary"
           style={{
+            flex: 1,
             padding: 'var(--space-md)',
-            backgroundColor: 'var(--color-surface-variant)',
-            color: 'var(--color-text)',
-            border: 'none',
-            borderRadius: 'var(--radius-md)',
-            cursor: 'pointer',
           }}
         >
           취소
@@ -491,13 +455,10 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
+            className="btn btn-danger"
             style={{
+              flex: 1,
               padding: 'var(--space-md)',
-              backgroundColor: 'var(--color-error)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              cursor: 'pointer',
             }}
           >
             삭제
@@ -511,7 +472,8 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -524,27 +486,25 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
               backgroundColor: 'var(--color-surface)',
               borderRadius: 'var(--radius-lg)',
               padding: 'var(--space-lg)',
-              maxWidth: '300px',
+              maxWidth: '360px',
               width: '90%',
+              border: '1.5px solid var(--color-border)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginBottom: 'var(--space-md)' }}>정말 삭제하시겠습니까?</h3>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-md)', fontSize: 'var(--font-size-sm)' }}>
+            <h3 style={{ marginBottom: 'var(--space-sm)', fontSize: 'var(--font-size-lg)', fontWeight: 700 }}>정말 삭제하시겠습니까?</h3>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-lg)', fontSize: 'var(--font-size-sm)' }}>
               이 작업은 되돌릴 수 없습니다.
             </p>
             <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
               <button
                 type="button"
                 onClick={handleDelete}
+                className="btn btn-danger"
                 style={{
                   flex: 1,
                   padding: 'var(--space-sm)',
-                  backgroundColor: 'var(--color-error)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
                 }}
               >
                 삭제
@@ -552,14 +512,10 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
+                className="btn btn-secondary"
                 style={{
                   flex: 1,
                   padding: 'var(--space-sm)',
-                  backgroundColor: 'var(--color-surface-variant)',
-                  color: 'var(--color-text)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
                 }}
               >
                 취소

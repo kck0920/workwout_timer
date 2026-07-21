@@ -101,15 +101,18 @@ function App() {
           <button
             type="button"
             onClick={handleBack}
+            className="btn btn-secondary"
             style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--color-primary)',
-              cursor: 'pointer',
-              fontSize: 'var(--font-size-md)',
+              padding: '6px 14px',
+              fontSize: 'var(--font-size-sm)',
+              minHeight: 'auto',
+              borderRadius: 'var(--radius-sm)',
             }}
           >
-            ← 뒤로
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            뒤로
           </button>
         ) : (
           <span />
@@ -117,14 +120,14 @@ function App() {
         <ThemeToggle />
       </header>
 
-      <div className="app-layout">
+      <div className="app-layout" data-screen={screen}>
         {/* Sidebar: Preset List + History */}
         <aside className="app-sidebar" style={{ paddingTop: '60px' }}>
           <div style={{ padding: 'var(--space-md)', textAlign: 'center' }}>
-            <h1 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-sm)' }}>
+            <h1 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 'var(--space-sm)', fontWeight: 800 }}>
               Workout Timer
             </h1>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>
               세트 기반 인터벌 운동 타이머
             </p>
           </div>
@@ -133,19 +136,17 @@ function App() {
             <button
               type="button"
               onClick={handleNewPreset}
+              className="btn btn-primary"
               style={{
                 width: '100%',
                 padding: 'var(--space-md)',
-                backgroundColor: 'var(--color-primary)',
-                color: 'white',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                cursor: 'pointer',
-                fontWeight: 600,
                 fontSize: 'var(--font-size-md)',
               }}
             >
-              + 새 프리셋 만들기
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <path d="M5 12h14"/><path d="M12 5v14"/>
+              </svg>
+              새 프리셋 만들기
             </button>
           </div>
 
