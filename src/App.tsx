@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import { useTheme } from './hooks/useTheme'
 import { usePresets } from './hooks/usePresets'
 import { useWorkoutRecords } from './hooks/useWorkoutRecords'
 import { ThemeToggle } from './components/ThemeToggle'

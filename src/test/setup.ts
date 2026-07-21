@@ -1,10 +1,5 @@
 import '@testing-library/jest-dom'
-
-// Mock IndexedDB
-const indexedDB = {
-  open: vi.fn(),
-  deleteDatabase: vi.fn(),
-}
+import { vi } from 'vitest'
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
