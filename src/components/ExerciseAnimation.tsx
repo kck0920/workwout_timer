@@ -3,6 +3,11 @@ interface ExerciseAnimationProps {
   isExercise: boolean
 }
 
+const GIF_MAP: Record<string, string> = {
+  jumpingJacks: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnF4cHBpcGs4ZDZxd3I3cGo3YnRwem9vaGNvZmwydHZzZTc0Z2NoaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WgViBJUWQMEeu5Jvmd/giphy.gif',
+  squat: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExejBkNzZ1ZG4wMGFocnByaWlkMWN4OXBoano5ZHgxZjE5eXZodnI1biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fYHUeuuuFa3VFBOLzA/giphy.gif',
+}
+
 export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAnimationProps) {
   const name = exerciseName.toLowerCase()
 
@@ -158,7 +163,7 @@ export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAni
           position: 'relative',
         }}
       >
-        {type === 'jumpingJacks' ? (
+        {GIF_MAP[type] ? (
           <div
             style={{
               width: '100%',
@@ -174,8 +179,8 @@ export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAni
             }}
           >
             <img
-              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnF4cHBpcGs4ZDZxd3I3cGo3YnRwem9vaGNvZmwydHZzZTc0Z2NoaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WgViBJUWQMEeu5Jvmd/giphy.gif"
-              alt="점핑잭 운동 GIF"
+              src={GIF_MAP[type]}
+              alt={`${exerciseName} 운동 GIF`}
               style={{
                 width: '100%',
                 height: '100%',
