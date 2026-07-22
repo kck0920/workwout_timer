@@ -4,8 +4,16 @@ export class VibrationManager {
   private enabled = true
   private supported = typeof navigator !== 'undefined' && 'vibrate' in navigator
 
+  constructor() {
+    const savedEnabled = localStorage.getItem('vibrationEnabled')
+    if (savedEnabled !== null) {
+      this.enabled = savedEnabled === 'true'
+    }
+  }
+
   setEnabled(enabled: boolean): void {
     this.enabled = enabled
+    localStorage.setItem('vibrationEnabled', String(enabled))
   }
 
   isEnabled(): boolean {

@@ -14,6 +14,7 @@ function createEmptyExercise(): Exercise {
     name: '',
     type: 'exercise',
     duration: 30,
+    restDuration: 10,
   }
 }
 
@@ -334,6 +335,48 @@ export function PresetEditor({ preset, onSave, onDelete, onCancel }: PresetEdito
                 </div>
               )}
             </div>
+
+            {exercise.type === 'exercise' && (
+              <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+                <div style={{ flex: 1 }}>
+                  <label
+                    htmlFor={`restDuration-${index}`}
+                    style={{
+                      display: 'block',
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--color-text-muted)',
+                      marginBottom: '4px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    휴식 시간 (초)
+                  </label>
+                  <input
+                    id={`restDuration-${index}`}
+                    type="number"
+                    min={5}
+                    max={120}
+                    value={exercise.restDuration ?? 10}
+                    onChange={(e) => {
+                      const parsed = parseInt(e.target.value)
+                      if (!isNaN(parsed) && parsed >= 5 && parsed <= 120) {
+                        updateExercise(index, { restDuration: parsed })
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const parsed = parseInt(e.target.value)
+                      if (isNaN(parsed) || parsed < 5) {
+                        updateExercise(index, { restDuration: 10 })
+                      } else {
+                        const clamped = Math.min(120, Math.max(5, parsed))
+                        updateExercise(index, { restDuration: clamped })
+                      }
+                    }}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+            )}
 
             <div style={{ display: 'flex', gap: 'var(--space-sm)', marginTop: 'var(--space-xs)' }}>
               <button

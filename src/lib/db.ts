@@ -133,3 +133,44 @@ export async function deleteRecord(id: string): Promise<void> {
   const store = tx.objectStore('records')
   await promisifyRequest(store.delete(id))
 }
+
+export async function updateRecordMemo(id: string, memo: string): Promise<void> {
+  const db = await openDB()
+  const tx = await getTransaction(db, ['records'], 'readwrite')
+  const store = tx.objectStore('records')
+  const record = await promisifyRequest(store.get(id))
+  if (record) {
+    record.memo = memo
+    await promisifyRequest(store.put(record))
+  }
+}
+
+// Preset Export/Import
+export function exportPreset(preset: Preset): string {
+  const exportData = {
+    version: 1,
+    exportedAt: Date.now(),
+    preset: {
+      name: preset.name,
+      exercises: preset.exercises,
+      sets: preset.sets,
+    },
+  }
+  return JSON.stringify(exportData, null, 2)
+}
+
+export async function importPreset(jsonString: string): Promise<Preset> {
+  const data = JSON.parse(jsonString)
+  
+  if (!data.version || !data.preset) {
+    throw new Error('유효하지 않은 프리셋 파일입니다.')
+  }
+
+  const { name, exercises, sets } = data.preset
+  
+  if (!name || !Array.isArray(exercises) || typeof sets !== 'number') {
+    throw new Error('프리셋 데이터가 올바르지 않습니다.')
+  }
+
+  return createPreset({ name, exercises, sets })
+}

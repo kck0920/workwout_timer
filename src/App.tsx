@@ -2,11 +2,14 @@ import { useState, useCallback } from 'react'
 import { usePresets } from './hooks/usePresets'
 import { useWorkoutRecords } from './hooks/useWorkoutRecords'
 import { useWakeLock } from './hooks/useWakeLock'
+import { useFeedback } from './hooks/useFeedback'
 import { ThemeToggle } from './components/ThemeToggle'
+import { SettingsMenu } from './components/SettingsMenu'
 import { PresetList } from './components/PresetList'
 import { PresetEditor } from './components/PresetEditor'
 import { WorkoutScreen } from './components/WorkoutScreen'
 import { WorkoutHistory } from './components/WorkoutHistory'
+import { WorkoutStats } from './components/WorkoutStats'
 import { PWAInstallPrompt } from './components/PWAInstallPrompt'
 import type { Preset } from './lib/types'
 import './styles/globals.css'
@@ -17,6 +20,7 @@ function App() {
   // Theme initialized via useTheme hook
   const { presets, loading, error, refresh } = usePresets()
   const { records, refresh: refreshRecords, removeRecord } = useWorkoutRecords()
+  const { setAudioEnabled, setVibrationEnabled, setSoundTheme, getSoundTheme, isAudioEnabled, isVibrationEnabled, isVibrationSupported } = useFeedback()
   const [screen, setScreen] = useState<Screen>('home')
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null)
 
@@ -120,7 +124,18 @@ function App() {
         ) : (
           <span />
         )}
-        <ThemeToggle />
+        <div style={{ display: 'flex', gap: 'var(--space-xs)' }}>
+          <SettingsMenu
+            isAudioEnabled={isAudioEnabled()}
+            isVibrationEnabled={isVibrationEnabled()}
+            isVibrationSupported={isVibrationSupported()}
+            soundTheme={getSoundTheme()}
+            onSetAudioEnabled={setAudioEnabled}
+            onSetVibrationEnabled={setVibrationEnabled}
+            onSetSoundTheme={setSoundTheme}
+          />
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="app-layout" data-screen={screen}>
@@ -170,8 +185,11 @@ function App() {
               presets={presets}
               onStart={handleStart}
               onEdit={handleEdit}
+              onImport={refresh}
             />
           )}
+
+          <WorkoutStats records={records} />
 
           <WorkoutHistory
             records={records}

@@ -3,6 +3,7 @@ export interface Exercise {
   type: 'exercise' | 'rest'
   duration: number // seconds
   repetitions?: number
+  restDuration?: number // custom rest duration in seconds (for exercise type only)
 }
 
 export interface Preset {
@@ -20,4 +21,5 @@ export interface WorkoutRecord {
   presetName: string
   completedAt: number
   duration: number // seconds
+  memo?: string
 }

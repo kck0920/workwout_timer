@@ -3,7 +3,7 @@ import { useTimer } from '../hooks/useTimer'
 import { useFeedback } from '../hooks/useFeedback'
 import { CircularProgress } from './CircularProgress'
 import type { Preset } from '../lib/types'
-import { createRecord } from '../lib/db'
+import { createRecord, updateRecordMemo } from '../lib/db'
 
 interface WorkoutScreenProps {
   preset: Preset
@@ -32,6 +32,8 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
   const [completed, setCompleted] = useState(false)
   const [totalDuration, setTotalDuration] = useState(0)
   const [startTime] = useState(() => Date.now())
+  const [memo, setMemo] = useState('')
+  const [recordId, setRecordId] = useState<string | null>(null)
 
   useEffect(() => {
     load(preset)
@@ -62,6 +64,8 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         presetId: preset.id,
         presetName: preset.name,
         duration: Math.floor((Date.now() - startTime) / 1000),
+      }).then((record) => {
+        setRecordId(record.id)
       })
     }
   }, [timerState, completed, preset, startTime, play])
@@ -87,6 +91,13 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
     setCompleted(false)
   }, [reset])
 
+  const handleSaveMemo = useCallback(async () => {
+    if (recordId && memo.trim()) {
+      await updateRecordMemo(recordId, memo.trim())
+    }
+    onComplete()
+  }, [recordId, memo, onComplete])
+
   if (completed) {
     return (
       <div
@@ -103,10 +114,40 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-lg)' }}>
           총 시간: {Math.floor(totalDuration / 60)}분 {totalDuration % 60}초
         </p>
+
+        {/* Memo Input */}
+        <div style={{ marginBottom: 'var(--space-lg)', textAlign: 'left' }}>
+          <label
+            htmlFor="workout-memo"
+            style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--color-text-muted)',
+              marginBottom: 'var(--space-xs)',
+              fontWeight: 500,
+            }}
+          >
+            운동 메모 (선택사항)
+          </label>
+          <textarea
+            id="workout-memo"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            placeholder="오늘 운동에 대한 메모를 남겨보세요..."
+            rows={3}
+            className="form-input"
+            style={{
+              width: '100%',
+              resize: 'vertical',
+              minHeight: '80px',
+            }}
+          />
+        </div>
+
         <div className="workout-controls" style={{ gap: 'var(--space-sm)' }}>
           <button
             type="button"
-            onClick={onComplete}
+            onClick={handleSaveMemo}
             className="btn btn-primary"
             style={{
               flex: 1,

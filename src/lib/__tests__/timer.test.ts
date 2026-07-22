@@ -15,8 +15,8 @@ describe('TimerEngine', () => {
     id: 'test-1',
     name: '테스트 프리셋',
     exercises: [
-      { name: '스쿼트', type: 'exercise', duration: 10 },
-      { name: '휴식', type: 'rest', duration: 5 },
+      { name: '스쿼트', type: 'exercise', duration: 10, restDuration: 5 },
+      { name: '푸쉬업', type: 'exercise', duration: 10, restDuration: 5 },
     ],
     sets: 2,
     createdAt: Date.now(),
@@ -109,10 +109,15 @@ describe('TimerEngine', () => {
     engine.load(preset)
     engine.start()
     
-    // Skip through all exercises (2 sets × 2 exercises = 4 skips)
+    // Skip through all exercises (2 sets × (exercise + rest + exercise) = 6 skips, but last exercise has no rest)
+    // Set 1: exercise -> rest -> exercise
+    // Set 2: exercise -> rest -> exercise
+    // Total: 6 steps, need 6 skips to complete
     engine.skip() // rest
     engine.skip() // exercise 2
-    engine.skip() // rest 2
+    engine.skip() // exercise set 2
+    engine.skip() // rest set 2
+    engine.skip() // exercise 2 set 2
     engine.skip() // complete
     
     expect(onComplete).toHaveBeenCalled()
@@ -153,9 +158,10 @@ describe('TimerEngine', () => {
     engine.load(preset)
     engine.start()
     
-    // Skip through first set (exercise + rest)
+    // Skip through first set (exercise -> rest -> exercise)
     engine.skip() // rest
-    engine.skip() // next set
+    engine.skip() // exercise 2
+    engine.skip() // completes set 0, moves to set 1
     
     expect(onSetComplete).toHaveBeenCalledWith(0)
   })

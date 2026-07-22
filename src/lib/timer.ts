@@ -18,7 +18,6 @@ interface TimerStep {
 }
 
 export class TimerEngine {
-  private preset: Preset | null = null
   private steps: TimerStep[] = []
   private currentStepIndex = 0
   private remaining = 0
@@ -52,7 +51,6 @@ export class TimerEngine {
   }
 
   load(preset: Preset): void {
-    this.preset = preset
     this.steps = this.buildSteps(preset)
     this.currentStepIndex = 0
     this.state = 'idle'
@@ -63,11 +61,25 @@ export class TimerEngine {
     const steps: TimerStep[] = []
     for (let setIndex = 0; setIndex < preset.sets; setIndex++) {
       for (let exerciseIndex = 0; exerciseIndex < preset.exercises.length; exerciseIndex++) {
+        const exercise = preset.exercises[exerciseIndex]
         steps.push({
-          exercise: preset.exercises[exerciseIndex],
+          exercise,
           setIndex,
           exerciseIndex,
         })
+        // Add rest step after exercise (except for the last exercise in a set)
+        if (exercise.type === 'exercise' && exerciseIndex < preset.exercises.length - 1) {
+          const restDuration = exercise.restDuration ?? 10
+          steps.push({
+            exercise: {
+              name: '휴식',
+              type: 'rest',
+              duration: restDuration,
+            },
+            setIndex,
+            exerciseIndex,
+          })
+        }
       }
     }
     return steps
@@ -159,8 +171,10 @@ export class TimerEngine {
     this.stopTimer()
 
     const currentStep = this.steps[this.currentStepIndex]
-    const isLastInSet =
-      currentStep.exerciseIndex === this.preset!.exercises.length - 1
+    const nextStep = this.steps[this.currentStepIndex + 1]
+    
+    // Check if this is the last step in the current set
+    const isLastInSet = !nextStep || nextStep.setIndex !== currentStep.setIndex
 
     if (isLastInSet) {
       this.callbacks.onSetComplete?.(currentStep.setIndex)
