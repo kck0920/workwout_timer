@@ -207,6 +207,12 @@ export class TimerEngine {
     return this.steps[this.currentStepIndex]
   }
 
+  getNextStep(): TimerStep | null {
+    const nextIndex = this.currentStepIndex + 1
+    if (nextIndex >= this.steps.length) return null
+    return this.steps[nextIndex]
+  }
+
   getProgress(): number {
     if (this.totalDuration === 0) return 0
     return 1 - this.remaining / this.totalDuration

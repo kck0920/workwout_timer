@@ -12,6 +12,7 @@ interface TimerInfo {
   currentSet: number
   totalSets: number
   countdown: number | null
+  nextExercise: Exercise | null
 }
 
 const initialState: TimerInfo = {
@@ -23,6 +24,7 @@ const initialState: TimerInfo = {
   currentSet: 0,
   totalSets: 0,
   countdown: null,
+  nextExercise: null,
 }
 
 export function useTimer() {
@@ -31,6 +33,7 @@ export function useTimer() {
 
   const updateInfo = useCallback((engine: TimerEngine, preset: Preset | null) => {
     const step = engine.getCurrentStep()
+    const nextStep = engine.getNextStep()
     setTimerInfo((prev) => ({
       state: engine.getState(),
       remaining: engine.getRemaining(),
@@ -40,6 +43,7 @@ export function useTimer() {
       currentSet: step ? step.setIndex + 1 : 0,
       totalSets: preset?.sets ?? 0,
       countdown: prev.countdown,
+      nextExercise: nextStep?.exercise ?? null,
     }))
   }, [])
 

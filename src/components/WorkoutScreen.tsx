@@ -20,6 +20,7 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
     currentSet,
     totalSets,
     countdown,
+    nextExercise,
     load,
     start,
     pause,
@@ -135,10 +136,14 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
       {/* Exercise Info */}
       <div className="workout-info">
         <h2 className="workout-title">
-          {currentExercise?.name || preset.name}
+          {timerState === 'resting' && nextExercise
+            ? nextExercise.name
+            : currentExercise?.name || preset.name}
         </h2>
         <p className="workout-sets">
-          세트 {currentSet} / {totalSets}
+          {timerState === 'resting' && nextExercise
+            ? `다음 운동: ${nextExercise.name}`
+            : `세트 ${currentSet} / ${totalSets}`}
         </p>
       </div>
 
