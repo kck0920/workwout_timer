@@ -9,6 +9,7 @@ const GIF_MAP: Record<string, string> = {
   pushup: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjkwNWlmNDBuMjc3eHR6ZHMyczd1OWUybHRvOHluZ29yMmhqMjk5OCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1JdJzYK1SEZVaCgj1P/giphy.gif',
   mountainClimber: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NnN4c3ZxdzgwdWJ4cXM5OWI5aW1qaWx3aHFldWVsaWlra3h3dHVpYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/vI2BMBcFDgbbFrB0bA/giphy.gif',
   plank: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cnRjdHhjZnIzZGxhZm9mbW90OWEyYTFwejAwdWFpbGplYTFqeXExcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/T8JPUqEXpl5ilx3uom/giphy.gif',
+  rest: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bXB3Ymx3ZjM1M2JmN3RqYXAzZWpnM3J4b3p4Nms3dHp0MmgwdGpudSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3Fnc7aX2m21coimxrx/giphy.gif',
 }
 
 export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAnimationProps) {
