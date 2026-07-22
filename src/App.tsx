@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { usePresets } from './hooks/usePresets'
 import { useWorkoutRecords } from './hooks/useWorkoutRecords'
+import { useWakeLock } from './hooks/useWakeLock'
 import { ThemeToggle } from './components/ThemeToggle'
 import { PresetList } from './components/PresetList'
 import { PresetEditor } from './components/PresetEditor'
@@ -18,6 +19,8 @@ function App() {
   const { records, refresh: refreshRecords, removeRecord } = useWorkoutRecords()
   const [screen, setScreen] = useState<Screen>('home')
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null)
+
+  useWakeLock(true)
 
   const handleStart = useCallback((preset: Preset) => {
     setSelectedPreset(preset)
