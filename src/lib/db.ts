@@ -73,13 +73,6 @@ export async function getPreset(id: string): Promise<Preset | undefined> {
   return promisifyRequest(store.get(id))
 }
 
-export async function getAllPresets(): Promise<Preset[]> {
-  const db = await openDB()
-  const tx = await getTransaction(db, ['presets'])
-  const store = tx.objectStore('presets')
-  return promisifyRequest(store.getAll())
-}
-
 export async function updatePreset(preset: Preset): Promise<Preset> {
   const db = await openDB()
   const tx = await getTransaction(db, ['presets'], 'readwrite')
@@ -146,6 +139,65 @@ export async function updateRecordMemo(id: string, memo: string): Promise<void> 
 }
 
 // Preset Export/Import
+export const DEFAULT_BODYWEIGHT_PRESETS: Omit<Preset, 'id' | 'createdAt' | 'updatedAt'>[] = [
+  {
+    name: '[맨손 20분] 전신 칼로리 폭파 루틴',
+    sets: 4,
+    exercises: [
+      { name: '점핑잭 (전신 유산소)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '에어 스쿼트 (하체 기본)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '무릎 푸시업 (가슴/삼두)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '마운틴 클라이머 (복근/복부)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '플랭크 (코어 전반)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '세트 간 휴식', type: 'rest', duration: 20 },
+    ],
+  },
+  {
+    name: '[맨손 20분] 하체 & 코어 강화 루틴',
+    sets: 4,
+    exercises: [
+      { name: '와이드 스쿼트 (허벅지 안쪽/둔근)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '리버스 런지 (허벅지/힙)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '글루트 브릿지 (힙/햄스트링)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '레그 레이즈 (하복부)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '플랭크 트위스트 (옆구리/코어)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '세트 간 휴식', type: 'rest', duration: 20 },
+    ],
+  },
+  {
+    name: '[맨손 20분] 상체 & 코어 단련 루틴',
+    sets: 4,
+    exercises: [
+      { name: '표준 푸시업 (가슴/어깨/팔)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '파이크 푸시업 (어깨/상체)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '슈퍼맨 홀드 (등/허리/척추)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '플로어 딥스 (삼두/팔 뒷근육)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '홀로우 바디 홀드 (코어 전면)', type: 'exercise', duration: 50, restDuration: 10 },
+      { name: '세트 간 휴식', type: 'rest', duration: 20 },
+    ],
+  },
+]
+
+export async function seedDefaultPresets(): Promise<Preset[]> {
+  const seeded: Preset[] = []
+  for (const presetData of DEFAULT_BODYWEIGHT_PRESETS) {
+    const created = await createPreset(presetData)
+    seeded.push(created)
+  }
+  return seeded
+}
+
+export async function getAllPresets(): Promise<Preset[]> {
+  const db = await openDB()
+  const tx = await getTransaction(db, ['presets'])
+  const store = tx.objectStore('presets')
+  const presets = await promisifyRequest(store.getAll())
+  if (presets.length === 0) {
+    return await seedDefaultPresets()
+  }
+  return presets
+}
+
 export function exportPreset(preset: Preset): string {
   const exportData = {
     version: 1,
