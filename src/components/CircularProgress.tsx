@@ -1,13 +1,17 @@
+import { ExerciseAnimation } from './ExerciseAnimation'
+
 interface CircularProgressProps {
   progress: number
   remaining: number
   isExercise: boolean
+  exerciseName?: string
 }
 
 export function CircularProgress({
   progress,
   remaining,
   isExercise,
+  exerciseName = '',
 }: CircularProgressProps) {
   const strokeWidth = 4.3
   const radius = (100 - strokeWidth) / 2
@@ -56,21 +60,39 @@ export function CircularProgress({
         />
       </svg>
 
-      {/* Timer display */}
+      {/* Content display: Animation on Left, Timer & Label on Right */}
       <div
         style={{
           position: 'absolute',
+          inset: 0,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'var(--space-md)',
+          gap: 'var(--space-sm)',
         }}
       >
-        <span className="timer-text-time">
-          {formatTime(remaining)}
-        </span>
-        <span className="timer-text-label">
-          {isExercise ? '운동 중' : '휴식 중'}
-        </span>
+        {/* Animation on the Left */}
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <ExerciseAnimation exerciseName={exerciseName} isExercise={isExercise} />
+        </div>
+
+        {/* Timer Number & Label on the Right */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <span className="timer-text-time">
+            {formatTime(remaining)}
+          </span>
+          <span className="timer-text-label">
+            {isExercise ? '운동 중' : '휴식 중'}
+          </span>
+        </div>
       </div>
     </div>
   )

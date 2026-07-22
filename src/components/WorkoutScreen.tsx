@@ -193,6 +193,11 @@ export function WorkoutScreen({ preset, onComplete, onExit }: WorkoutScreenProps
         progress={progress}
         remaining={remaining}
         isExercise={timerState === 'exercising'}
+        exerciseName={
+          timerState === 'resting'
+            ? '휴식'
+            : currentExercise?.name || preset.name
+        }
       />
 
       {/* Controls */}
