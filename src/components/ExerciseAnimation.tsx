@@ -147,7 +147,7 @@ export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAni
         }
       `}</style>
 
-      {/* SVG Container */}
+      {/* Media / SVG Container */}
       <div
         style={{
           width: '110px',
@@ -158,57 +158,52 @@ export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAni
           position: 'relative',
         }}
       >
-        <svg
-          viewBox="0 0 120 120"
-          style={{ width: '100%', height: '100%' }}
-          stroke={bodyColor}
-          strokeWidth="4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        >
-          {/* Floor & Shadow */}
-          <line x1="12" y1="104" x2="108" y2="104" stroke="var(--color-border)" strokeWidth="3" opacity="0.5" />
-          <ellipse
-            cx="60"
-            cy="104"
-            rx="32"
-            ry="4"
-            fill="rgba(0, 0, 0, 0.2)"
-            stroke="none"
+        {type === 'jumpingJacks' ? (
+          <div
             style={{
-              transformOrigin: '60px 104px',
-              animation: type === 'jumpingJacks' ? 'anim-shadow-jack 0.8s infinite ease-in-out' : 'none',
+              width: '100%',
+              height: '100%',
+              borderRadius: 'var(--radius-md)',
+              overflow: 'hidden',
+              border: '1.5px solid var(--color-border)',
+              backgroundColor: 'var(--color-surface)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
             }}
-          />
-
-          {/* 1. JUMPING JACKS */}
-          {type === 'jumpingJacks' && (
-            <g transform="translate(60, 56)">
-              {/* Head */}
-              <circle cx="0" cy="-36" r="8" fill={bodyColor} stroke="none" />
-              {/* Torso */}
-              <line x1="0" y1="-28" x2="0" y2="6" strokeWidth="5" />
-              {/* Muscle Highlight: Full Body */}
-              <line x1="0" y1="-26" x2="0" y2="4" stroke={primaryColor} strokeWidth="3" style={{ animation: 'muscle-glow 1s infinite' }} />
-              {/* Left Arm */}
-              <g style={{ transformOrigin: '0px -26px', animation: 'anim-jack-arms-left 0.8s infinite ease-in-out' }}>
-                <line x1="0" y1="-26" x2="-28" y2="-8" strokeWidth="4" />
-              </g>
-              {/* Right Arm */}
-              <g style={{ transformOrigin: '0px -26px', animation: 'anim-jack-arms-right 0.8s infinite ease-in-out' }}>
-                <line x1="0" y1="-26" x2="28" y2="-8" strokeWidth="4" />
-              </g>
-              {/* Left Leg */}
-              <g style={{ transformOrigin: '0px 6px', animation: 'anim-jack-legs-left 0.8s infinite ease-in-out' }}>
-                <line x1="0" y1="6" x2="-14" y2="42" strokeWidth="4" />
-              </g>
-              {/* Right Leg */}
-              <g style={{ transformOrigin: '0px 6px', animation: 'anim-jack-legs-right 0.8s infinite ease-in-out' }}>
-                <line x1="0" y1="6" x2="14" y2="42" strokeWidth="4" />
-              </g>
-            </g>
-          )}
+          >
+            <img
+              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnF4cHBpcGs4ZDZxd3I3cGo3YnRwem9vaGNvZmwydHZzZTc0Z2NoaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WgViBJUWQMEeu5Jvmd/giphy.gif"
+              alt="점핑잭 운동 GIF"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 'var(--radius-md)',
+              }}
+            />
+          </div>
+        ) : (
+          <svg
+            viewBox="0 0 120 120"
+            style={{ width: '100%', height: '100%' }}
+            stroke={bodyColor}
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          >
+            {/* Floor & Shadow */}
+            <line x1="12" y1="104" x2="108" y2="104" stroke="var(--color-border)" strokeWidth="3" opacity="0.5" />
+            <ellipse
+              cx="60"
+              cy="104"
+              rx="32"
+              ry="4"
+              fill="rgba(0, 0, 0, 0.2)"
+              stroke="none"
+            />
 
           {/* 2. SQUAT */}
           {type === 'squat' && (
@@ -408,6 +403,7 @@ export function ExerciseAnimation({ exerciseName = '', isExercise }: ExerciseAni
             </g>
           )}
         </svg>
+        )}
       </div>
 
       {/* Target Muscle Badge */}
